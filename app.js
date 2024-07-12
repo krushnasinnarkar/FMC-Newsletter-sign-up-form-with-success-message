@@ -1,31 +1,45 @@
-var input = document.getElementById('input-email');
-const ipt = document.getElementById('errer');
-const btn1 = document.getElementById('btn1');
-const btn2 = document.getElementById('btn2');
-var c1 = document.getElementById('cnt1');
-var c2 = document.getElementById('cnt2');
-const msg = document.getElementById('msg');
+const form = document.querySelector("#newsletter-form");
+const submittedEmail = document.querySelector("#submitted-email");
+const signup = document.querySelector("#signup");
+const success = document.querySelector("#success");
+const dismiss = document.querySelector("#dismiss");
 
-function back(){
-    c1.style.display = "grid";
-    c2.style.display = "none";
-    input.value = '';
+function updateSuccessMessage(email) {
+  // update the strong tag with email
+  submittedEmail.textContent = email;
 }
-btn2.addEventListener('click', back); 
 
-function WrongData() {
-    let validRegex =  /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-    
-   if (input.value.match(validRegex)) {
-    msg.textContent = input.value;
-    c1.style.display = "none";
-    c2.style.display = "grid";
-   } else {
-    input.style.border = '1px solid hsl(4, 100%, 67%)';
-    input.style.color = 'hsl(4, 100%, 67%)';
-    input.style.backgroundColor = 'hsl(4, 100%, 88%)';
-    ipt.textContent = 'Valid email required';
-   }
-   
+function switchSections() {
+  signup.classList.toggle("hidden");
+  success.classList.toggle("hidden");
 }
-btn1.addEventListener('click', WrongData); 
+
+function isValidEntry(str) {
+  const reg = new RegExp("[a-z0-9]+@[a-z]+.[a-z]{2,3}");
+  return reg.test(str);
+}
+
+function showErrors() {
+  const errorMss = document.querySelector(".error-message");
+  const input = document.querySelector("#email");
+  errorMss.classList.remove("hidden");
+  input.classList.add("error");
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const email = form.querySelector("#email");
+  const valid = isValidEntry(email.value);
+  if (!valid) {
+    return showErrors();
+  }
+  if (valid) {
+    updateSuccessMessage(email.value);
+    switchSections();
+  }
+});
+
+dismiss.addEventListener("click", () => {
+  switchSections();
+  updateSuccessMessage("");
+});
